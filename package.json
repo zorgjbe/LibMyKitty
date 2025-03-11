@@ -1,0 +1,22 @@
+{
+  "name": "bc-base-addon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bcBaseAddon.js",
+  "scripts": {
+    "start": "esbuild ./src/index.ts --bundle --sourcemap --outfile=dist/bcBaseAddon.js --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bondage-club-mod-sdk": "^1.2.0",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.16",
+    "bc-stubs": "^113.0.0",
+    "esbuild": "^0.25.1",
+    "typescript": "^5.8.2"
+  }
+}
