@@ -15,7 +15,7 @@ export interface AddonServerChatRoomMessage extends ServerChatRoomMessageBase {
 
 export interface ReceivedAddonServerChatRoomMessage extends ServerChatRoomMessageBase {
   Target?: number;
-  Content: "BcBaseAddonMsg";
+  Content: `${string}Msg`;
   Type: "Hidden";
   Dictionary: {
     type: string;

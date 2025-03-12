@@ -1,11 +1,18 @@
-import { AddonServerChatRoomMessage, ReceivedAddonServerChatRoomMessage } from "@/types/types";
-import { syncCharacter, syncStorage } from "./storage";
-import { isMessageRecived } from "@/utils/server";
+import { type AddonServerChatRoomMessage, type ReceivedAddonServerChatRoomMessage } from "@/types/types";
+import { MOD_NAME } from "./storage";
+
+export const HookPriority = {
+  OBSERVE: 0,
+  ADD_BEHAVIOR: 1,
+  MODIFY_BEHAVIOR: 5,
+  OVERRIDE_BEHAVIOR: 10,
+  TOP: 100,
+};
 
 export function sendServerMessage(type: string, data?: any, target?: number) {
   const ChatRoomMessage: AddonServerChatRoomMessage = {
     Type: "Hidden",
-    Content: "BcBaseAddonMsg",
+    Content: `${MOD_NAME}Msg`,
     Sender: Player.MemberNumber,
     Target: target,
     Dictionary: [
@@ -18,22 +25,27 @@ export function sendServerMessage(type: string, data?: any, target?: number) {
   ServerSend("ChatRoomChat", ChatRoomMessage as ServerChatRoomMessage);
 }
 
+export const packetListeners: Record<string, (message: ReceivedAddonServerChatRoomMessage, data: any) => void> = {};
 export function receivePacket(message: AddonServerChatRoomMessage) {
   const received = isMessageRecived(message);
   if (!received) return;
 
   const type = message.Dictionary[0]!.type;
   const data = message.Dictionary[0]!.data;
-  switch (type) {
-    // to make every BcBaseAddon user have the "BcBaseAddon" set on their character
-    case "syncCharacter": {
-      syncCharacter(message.Sender, data);
-      break;
-    }
-    // to sync when someone joins
-    case "syncJoin": {
-      sendServerMessage("syncCharacter", Player.BcBaseAddon, message.Sender);
-      break;
+  for (const [key, callback] of Object.entries(packetListeners)) {
+    if (key === type) {
+      callback(message, data);
     }
   }
+}
+
+export function isMessageRecived(message: AddonServerChatRoomMessage): message is ReceivedAddonServerChatRoomMessage {
+  return (
+    message?.Content === `${MOD_NAME}Msg` &&
+    message.Sender &&
+    message.Sender !== Player.MemberNumber &&
+    message.Dictionary &&
+    message.Dictionary[0]?.data &&
+    message.Type === "Hidden"
+  );
 }

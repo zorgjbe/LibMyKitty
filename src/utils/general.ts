@@ -1,4 +1,3 @@
-import { saveStorage } from "@/modules/storage";
 export async function waitFor(func: { (): any; (): boolean; (): any }, cancelFunc = () => false) {
   while (!func()) {
     if (cancelFunc()) return false;

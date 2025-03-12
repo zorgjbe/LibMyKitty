@@ -1,14 +1,13 @@
 {
-  "name": "bc-base-addon",
-  "version": "1.0.0",
-  "description": "",
-  "main": "bcBaseAddon.js",
+  "name": "libmykitty",
+  "version": "1.0.3",
+  "description": "Library of utility functions for interacting with the Bondage Club mod api.",
   "scripts": {
-    "start": "esbuild ./src/index.ts --bundle --sourcemap --outfile=dist/bcBaseAddon.js --watch"
+    "build": "tsup"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "zoe-64",
+  "license": "MIT",
   "dependencies": {
     "bondage-club-mod-sdk": "^1.2.0",
     "lodash": "^4.17.21"
@@ -16,7 +15,20 @@
   "devDependencies": {
     "@types/lodash": "^4.17.16",
     "bc-stubs": "^113.0.0",
-    "esbuild": "^0.25.1",
-    "typescript": "^5.8.2"
-  }
+    "typescript": "^5.8.2",
+    "tsup": "^8.4.0"
+  },
+  "exports": {
+    "import": "./dist/libmykitty.mjs",
+    "require": "./dist/libmykitty.js"
+  },
+  "main": "./dist/libmykitty.js",
+  "module": "./dist/libmykitty.mjs",
+  "types": "./dist/libmykitty.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "package.json",
+    "README.md"
+  ]
 }
