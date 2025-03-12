@@ -1,8 +1,8 @@
 ${{\color{HotPink}\Large{\textsf{LibMyKitty}}}}$
 
-It gives you a **tantalizing** setup, so you don't have to start completely from scratch.
-Think of it like a **steamy outline**, it's there to help you get started a little faster... and a little more **erotically**.
-It's a great way to get your **imagination soaring** and to start building your own unique and captivating addon.
+It gives you a quick setup, so you don't have to start completely from scratch.
+Think of it like an outline, it's there to help you get started a little faster... and a little more **erotically**.
+It's a great way to get building your own addon.
 
 ### Start
 
