@@ -5,7 +5,7 @@ Think of it like an outline, it's there to help you get started a little faster.
 It's a great way to get building your own addon. 
 
 ### Start
-
+This is *recommended* but not necessary. You only have to install libmykitty.
 ```ts
 npm install libmykitty bondage-club-mod-sdk
 npm install bc-stubs --save-dev
