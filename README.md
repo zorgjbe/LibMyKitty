@@ -44,8 +44,8 @@ function init() {}
 
 #### Step 3 - Storage
 
-This sets up the storage for your mod. It automatically syncs the mod data between players.
-It can be accessed through `Player[MOD_NAME]`
+This sets up the storage for your mod. It automatically syncs the mod data between players.</br>
+It can be accessed through `Player[MOD_NAME]`</br>
 Storage doesn't get automatically updated when you change something in `Player[MOD_NAME]` to do that you'll have to call `storageManager.save()`
 
 ```ts
