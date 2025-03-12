@@ -7,11 +7,14 @@ It's a great way to get your **imagination soaring** and to start building your 
 ### Start
 
 ```ts
-npm install libmykitty bondage-club-mod-sdk --save-dev bc-stubs
+npm install libmykitty bondage-club-mod-sdk
+npm install bc-stubs --save-dev
 // or
-yarn add libmykitty bondage-club-mod-sdk -D bc-stubs
+yarn add libmykitty bondage-club-mod-sdk
+yarn add -D bc-stubs
 // or
-pnpm add libmykitty bondage-club-mod-sdk -D bc-stubs
+pnpm add libmykitty bondage-club-mod-sdk
+pnpm add -D bc-stubs
 ```
 
 #### Step 1 - Initialize before login
