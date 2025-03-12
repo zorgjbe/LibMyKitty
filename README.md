@@ -19,7 +19,7 @@ pnpm add -D bc-stubs
 
 #### Step 1 - Initialize before login
 
-This gives my kitty the information about your mod name and your version so it can quickstart the features it provides such as storage and sending data between players.
+This gives my kitty the information about your mod name and your version so it can quickstart the features it provides. Such as storage and sending data between players.
 
 ```ts
 export const bcModSDK = bcModSdk.registerMod({
