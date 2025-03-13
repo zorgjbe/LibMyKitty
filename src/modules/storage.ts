@@ -1,4 +1,4 @@
-import { type UnverifiedServerChatRoomMessage, type PartialDeep, type AddonServerChatRoomMessage } from "@/types/types";
+import { type PartialDeep } from "@/types/types";
 import { debounce, merge } from "lodash";
 import { receivePacket, registerModListener, sendModEvent } from "./server";
 import { getCharacter, getStorage, setStorage } from "@/utils/character";
@@ -21,7 +21,8 @@ export function initMyKitty(modInfo: ModSDKModInfo, options?: ModSDKModOptions &
   MOD_VERSION = modInfo.version;
   OPTIONS = merge(OPTIONS, options);
   BC_SDK.hookFunction("ChatRoomMessage", 1, (args, next) => {
-    receivePacket(args[0] as UnverifiedServerChatRoomMessage);
+    const [data] = args;
+    receivePacket(data);
     return next(args);
   });
   if (options?.activites) EnableActivities();
@@ -45,11 +46,12 @@ export function CreateModStorageManager<T extends StorageModel>(defaultStorage: 
       sendModEvent("syncCharacter", getStorage(Player), message.Sender);
     });
     BC_SDK.hookFunction("ChatRoomMessage", 1, (args, next) => {
-      if (args[0].Content === "ServerEnter" && args[0].Sender === Player.MemberNumber) {
+      const [data] = args;
+      if (data.Content === "ServerEnter" && data.Sender === Player.MemberNumber) {
         sendModEvent("syncJoin");
         return;
       }
-      receivePacket(args[0] as UnverifiedServerChatRoomMessage);
+      receivePacket(data);
       return next(args);
     });
     BC_SDK.hookFunction("ChatRoomSync", 1, (args, next) => {

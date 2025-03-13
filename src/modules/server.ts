@@ -1,5 +1,6 @@
-import { type UnverifiedServerChatRoomMessage, type AddonServerChatRoomMessage } from "@/types/types";
+import { type AddonChatRoomMessage } from "@/types/types";
 import { MOD_NAME, type StorageModel } from "./storage";
+import { isInteger, isObject, isString } from "lodash";
 export interface Events {
   syncCharacter: StorageModel;
   syncJoin: StorageModel;
@@ -13,22 +14,18 @@ export const HookPriority = {
 };
 
 export function sendModEvent<T extends keyof Events>(type: T, data?: Events[T], target?: number) {
-  const ChatRoomMessage: UnverifiedServerChatRoomMessage = {
+  const ChatRoomMessage: AddonChatRoomMessage = {
     Type: "Hidden",
-    Content: `${MOD_NAME}Msg`,
+    Content: `${MOD_NAME}${type}`,
     Sender: Player.MemberNumber,
     Target: target,
-    Dictionary: [
-      {
-        type: type,
-        data: data,
-      },
-    ],
+    Data: data,
   };
-  ServerSend("ChatRoomChat", ChatRoomMessage as ServerChatRoomMessage);
+  ServerSend("ChatRoomChat", ChatRoomMessage);
 }
+
 type EventListeners = {
-  [K in keyof Events]: (message: AddonServerChatRoomMessage, data: Events[K]) => void;
+  [K in keyof Events]: (message: AddonChatRoomMessage, data: Events[K]) => void;
 };
 
 const modListeners = new Map<keyof Events, EventListeners[keyof Events]>();
@@ -40,12 +37,13 @@ export function registerModListener<T extends keyof Events>(type: T, callback: E
 export function unregisterModListener<T extends keyof Events>(type: T) {
   modListeners.delete(type);
 }
-export function receivePacket(message: UnverifiedServerChatRoomMessage) {
+
+export function receivePacket(message: ServerChatRoomMessage) {
   const received = isModMessage(message);
   if (!received) return;
 
-  const type = message.Dictionary[0]!.type;
-  const data = message.Dictionary[0]!.data;
+  const type = message.Content.substring(MOD_NAME.length)
+  const data = message.Data;
   for (const [key, modListener] of [...modListeners]) {
     if (key === type) {
       modListener(message, data);
@@ -53,13 +51,11 @@ export function receivePacket(message: UnverifiedServerChatRoomMessage) {
   }
 }
 
-export function isModMessage(message: UnverifiedServerChatRoomMessage): message is AddonServerChatRoomMessage {
+export function isModMessage(message: unknown): message is AddonChatRoomMessage {
   return (
-    message?.Content === `${MOD_NAME}Msg` &&
-    message.Sender &&
-    message.Sender !== Player.MemberNumber &&
-    message.Dictionary &&
-    message.Dictionary[0]?.data &&
-    message.Type === "Hidden"
+    isObject(message) && 
+    "Type" in message && message.Type === "Hidden" &&
+    "Content" in message && isString(message.Content) && message.Content.startsWith(MOD_NAME) &&
+    "Sender" in message && isInteger(message.Sender) && message.Sender !== Player.MemberNumber
   );
 }
