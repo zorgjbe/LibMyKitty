@@ -1,4 +1,4 @@
-import { AtLogin, CreateModStorageManager, initMyKitty, registerModListener, type Events } from "libmykitty";
+import { AtLogin, CreateModStorageManager, initMyKitty, registerModListener, type BaseEvents } from "libmykitty";
 import { FULL_MOD_NAME, MOD_NAME, VERSION } from "../constants";
 
 type ModStorage = {
@@ -16,7 +16,7 @@ export const bcModSDK = initMyKitty({
 });
 
 AtLogin(init);
-interface MyEvents extends Events {
+interface Events extends BaseEvents {
   foo: { num: number };
 }
 
@@ -24,9 +24,7 @@ function init() {
   const storageManager = CreateModStorageManager<ModStorage>(DEFAULT_STORAGE);
   (<any>window).storageManager = storageManager;
 
-  registerModListener<MyEvents>("foo", (message, data) => {
+  registerModListener<Events, "foo">("foo", (message, data) => {
     console.log(data.num);
   });
 }
-
-(<any>window).sendPats = sendPats;

@@ -5900,7 +5900,6 @@ One of mods you are using is using an old version of SDK. It will work for now b
       console.log(data.num);
     });
   }
-  window.sendPats = sendPats;
 })();
 /*! Bundled license information:
 

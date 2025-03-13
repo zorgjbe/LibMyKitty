@@ -1,6 +1,6 @@
 import { type UnverifiedServerChatRoomMessage, type AddonServerChatRoomMessage } from "@/types/types";
 import { MOD_NAME, type StorageModel } from "./storage";
-export interface Events {
+export interface BaseEvents {
   syncCharacter: StorageModel;
   syncJoin: StorageModel;
 }
@@ -27,17 +27,17 @@ export function sendModMessage(type: string, data?: any, target?: number) {
   };
   ServerSend("ChatRoomChat", ChatRoomMessage as ServerChatRoomMessage);
 }
-type EventListeners = {
-  [K in keyof Events]: (message: AddonServerChatRoomMessage, data: Events[K]) => void;
+type EventListeners<T extends BaseEvents> = {
+  [K in keyof T]: (message: AddonServerChatRoomMessage, data: T[K]) => void;
 };
 
-const modListneers = new Map<keyof Events, EventListeners[keyof Events]>();
+const modListneers = new Map<keyof any, any>();
 
-export function registerModListener<T extends keyof Events>(type: T, callback: EventListeners[T]) {
+export function registerModListener<T extends BaseEvents, K extends keyof T>(type: K, callback: EventListeners<T>[K]) {
   modListneers.set(type, callback);
 }
 
-export function unregisterModListener(type: keyof Events) {
+export function unregisterModListener<T extends BaseEvents>(type: keyof T) {
   modListneers.delete(type);
 }
 export function receivePacket(message: UnverifiedServerChatRoomMessage) {
