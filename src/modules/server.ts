@@ -1,6 +1,9 @@
 import { type UnverifiedServerChatRoomMessage, type AddonServerChatRoomMessage } from "@/types/types";
-import { MOD_NAME } from "./storage";
-
+import { MOD_NAME, type StorageModel } from "./storage";
+export interface Events {
+  syncCharacter: StorageModel;
+  syncJoin: StorageModel;
+}
 export const HookPriority = {
   OBSERVE: 0,
   ADD_BEHAVIOR: 1,
@@ -24,23 +27,17 @@ export function sendModMessage(type: string, data?: any, target?: number) {
   };
   ServerSend("ChatRoomChat", ChatRoomMessage as ServerChatRoomMessage);
 }
-interface ModListener {
-  callback: (message: AddonServerChatRoomMessage, data: any) => void;
-  unregister(): void;
-}
-const modListneers = new Map<string, ModListener>();
+type EventListeners = {
+  [K in keyof Events]: (message: AddonServerChatRoomMessage, data: Events[K]) => void;
+};
 
-export function registerModListener(type: string, callback: (message: AddonServerChatRoomMessage, data: any) => void): ModListener {
-  const listener: ModListener = {
-    callback,
-    unregister() {
-      modListneers.delete(type);
-    },
-  };
-  modListneers.set(type, listener);
-  return listener;
+const modListneers = new Map<keyof Events, EventListeners[keyof Events]>();
+
+export function registerModListener<T extends keyof Events>(type: T, callback: EventListeners[T]) {
+  modListneers.set(type, callback);
 }
-export function unregisterModListener(type: string) {
+
+export function unregisterModListener(type: keyof Events) {
   modListneers.delete(type);
 }
 export function receivePacket(message: UnverifiedServerChatRoomMessage) {

@@ -62,7 +62,6 @@ const DEFAULT_STORAGE = {
 };
 function init() {
   const storageManager = CreateModStorageManager<ModStorage>(DEFAULT_STORAGE);
-  storageManager.init();
 }
 ```
 

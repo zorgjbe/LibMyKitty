@@ -3,7 +3,8 @@
   "version": "1.0.6",
   "description": "Library of utility functions for interacting with the Bondage Club mod api.",
   "scripts": {
-    "build": "tsup"
+    "build": "tsup",
+    "test:watch": "tsup --config tsup.config.test.ts  --watch"
   },
   "keywords": [],
   "author": "zoe-64",

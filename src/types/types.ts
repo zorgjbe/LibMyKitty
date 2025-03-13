@@ -24,3 +24,13 @@ export interface AddonServerChatRoomMessage extends ServerChatRoomMessageBase {
   Timeout?: number;
   Sender: number;
 }
+
+export interface MyKittyActivity {
+  ID: string;
+  Name: string;
+  Image: string;
+  OnClick?: (player: Character, group: AssetGroupItemName) => void;
+  Target?: AssetGroupItemName[];
+  TargetSelf?: AssetGroupItemName[];
+  Criteria?: (player: Character) => boolean;
+}

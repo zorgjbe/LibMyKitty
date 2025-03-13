@@ -18,16 +18,19 @@ export async function waitForElement(selector: string, options: { childCheck?: b
       const target = document.querySelector(selector);
       if (target && (!options.childCheck || target.childElementCount > 0)) {
         observer.disconnect();
-        clearTimeout(timeoutId);
+        timeoutId && clearTimeout(timeoutId);
         resolve(target);
       }
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
-
-    const timeoutId = setTimeout(() => {
-      observer.disconnect();
-      console.warn(`Element with selector "${selector}" not found within timeout`);
-    }, options.timeout || 10000);
+    let timeoutId: number;
+    if (options.timeout) {
+      timeoutId = setTimeout(() => {
+        observer.disconnect();
+        console.warn(`Element with selector "${selector}" not found within timeout`);
+      }, options.timeout);
+      return;
+    }
   });
 }
