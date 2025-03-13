@@ -1,4 +1,4 @@
-import { type AddonServerChatRoomMessage, type ReceivedAddonServerChatRoomMessage } from "@/types/types";
+import { type UnverifiedServerChatRoomMessage, type AddonServerChatRoomMessage } from "@/types/types";
 import { MOD_NAME } from "./storage";
 
 export const HookPriority = {
@@ -9,8 +9,8 @@ export const HookPriority = {
   TOP: 100,
 };
 
-export function sendServerMessage(type: string, data?: any, target?: number) {
-  const ChatRoomMessage: AddonServerChatRoomMessage = {
+export function sendModMessage(type: string, data?: any, target?: number) {
+  const ChatRoomMessage: UnverifiedServerChatRoomMessage = {
     Type: "Hidden",
     Content: `${MOD_NAME}Msg`,
     Sender: Player.MemberNumber,
@@ -24,22 +24,39 @@ export function sendServerMessage(type: string, data?: any, target?: number) {
   };
   ServerSend("ChatRoomChat", ChatRoomMessage as ServerChatRoomMessage);
 }
+interface ModListener {
+  callback: (message: AddonServerChatRoomMessage, data: any) => void;
+  unregister(): void;
+}
+const modListneers = new Map<string, ModListener>();
 
-export const packetListeners: Record<string, (message: ReceivedAddonServerChatRoomMessage, data: any) => void> = {};
-export function receivePacket(message: AddonServerChatRoomMessage) {
-  const received = isMessageRecived(message);
+export function registerModListener(type: string, callback: (message: AddonServerChatRoomMessage, data: any) => void): ModListener {
+  const listener: ModListener = {
+    callback,
+    unregister() {
+      modListneers.delete(type);
+    },
+  };
+  modListneers.set(type, listener);
+  return listener;
+}
+export function unregisterModListener(type: string) {
+  modListneers.delete(type);
+}
+export function receivePacket(message: UnverifiedServerChatRoomMessage) {
+  const received = isModMessage(message);
   if (!received) return;
 
   const type = message.Dictionary[0]!.type;
   const data = message.Dictionary[0]!.data;
-  for (const [key, callback] of Object.entries(packetListeners)) {
+  for (const [key, modListneer] of Object.entries(modListneers)) {
     if (key === type) {
-      callback(message, data);
+      modListneer.callback(message, data);
     }
   }
 }
 
-export function isMessageRecived(message: AddonServerChatRoomMessage): message is ReceivedAddonServerChatRoomMessage {
+export function isModMessage(message: UnverifiedServerChatRoomMessage): message is AddonServerChatRoomMessage {
   return (
     message?.Content === `${MOD_NAME}Msg` &&
     message.Sender &&

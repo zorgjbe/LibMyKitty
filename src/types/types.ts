@@ -2,7 +2,7 @@ export type PartialDeep<T> = {
   [P in keyof T]?: PartialDeep<T[P]>;
 };
 
-export interface AddonServerChatRoomMessage extends ServerChatRoomMessageBase {
+export interface UnverifiedServerChatRoomMessage extends ServerChatRoomMessageBase {
   Target?: number;
   Content: ServerChatRoomMessageContentType;
   Type: ServerChatRoomMessageType;
@@ -13,7 +13,7 @@ export interface AddonServerChatRoomMessage extends ServerChatRoomMessageBase {
   Timeout?: number;
 }
 
-export interface ReceivedAddonServerChatRoomMessage extends ServerChatRoomMessageBase {
+export interface AddonServerChatRoomMessage extends ServerChatRoomMessageBase {
   Target?: number;
   Content: `${string}Msg`;
   Type: "Hidden";

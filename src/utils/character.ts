@@ -3,16 +3,16 @@
 import { MOD_NAME } from "@/modules/storage";
 
 // Thanks Zoi
-export const getCharacter = (identifier: string | number | Character): Character | undefined => {
+export function getCharacter(identifier: string | number | Character): Character | undefined {
   if (!identifier) return;
   if (typeof identifier === "object") return identifier;
-  return ChatRoomCharacter.find((Character) => {
-    return Character.MemberNumber == identifier || Character.Name.toLowerCase() === identifier || Character.Nickname?.toLowerCase() === identifier;
+  return ChatRoomCharacter.find((character) => {
+    return character.MemberNumber === identifier || character.Name.toLowerCase() === identifier || character.Nickname?.toLowerCase() === identifier;
   });
-};
+}
 
 // @ts-ignore
-export const isAddonPlayer = (character: Character, version = Player[MOD_NAME].version): boolean => {
+export function isAddonPlayer(character: Character, version = Player[MOD_NAME].version): boolean {
   // @ts-ignore
   return Boolean(character?.[MOD_NAME] && character[MOD_NAME].version === version);
-};
+}
