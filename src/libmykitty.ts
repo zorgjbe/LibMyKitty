@@ -1,8 +1,9 @@
 export * from "@/index";
 
-export { sendModMessage, HookPriority, registerModListener, unregisterModListener, type BaseEvents } from "@/modules/server";
+export { sendModEvent, HookPriority, registerModListener, unregisterModListener, type Events } from "@/modules/server";
 export { initMyKitty, CreateModStorageManager, SAVE_INTERVAL, type StorageModel } from "@/modules/storage";
 export * from "@/modules/webhook";
+export { registerActivity } from "@/modules/activities";
 
 export * from "@/types/types";
 

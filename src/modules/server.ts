@@ -1,6 +1,6 @@
 import { type UnverifiedServerChatRoomMessage, type AddonServerChatRoomMessage } from "@/types/types";
 import { MOD_NAME, type StorageModel } from "./storage";
-export interface BaseEvents {
+export interface Events {
   syncCharacter: StorageModel;
   syncJoin: StorageModel;
 }
@@ -12,7 +12,7 @@ export const HookPriority = {
   TOP: 100,
 };
 
-export function sendModMessage(type: string, data?: any, target?: number) {
+export function sendModEvent<T extends keyof Events>(type: T, data?: Events[T], target?: number) {
   const ChatRoomMessage: UnverifiedServerChatRoomMessage = {
     Type: "Hidden",
     Content: `${MOD_NAME}Msg`,
@@ -27,17 +27,17 @@ export function sendModMessage(type: string, data?: any, target?: number) {
   };
   ServerSend("ChatRoomChat", ChatRoomMessage as ServerChatRoomMessage);
 }
-type EventListeners<T extends BaseEvents> = {
-  [K in keyof T]: (message: AddonServerChatRoomMessage, data: T[K]) => void;
+type EventListeners = {
+  [K in keyof Events]: (message: AddonServerChatRoomMessage, data: Events[K]) => void;
 };
 
-const modListneers = new Map<keyof any, any>();
+const modListneers = new Map<keyof Events, EventListeners[keyof Events]>();
 
-export function registerModListener<T extends BaseEvents, K extends keyof T>(type: K, callback: EventListeners<T>[K]) {
+export function registerModListener<T extends keyof Events>(type: T, callback: EventListeners[T]) {
   modListneers.set(type, callback);
 }
 
-export function unregisterModListener<T extends BaseEvents>(type: keyof T) {
+export function unregisterModListener<T extends keyof Events>(type: T) {
   modListneers.delete(type);
 }
 export function receivePacket(message: UnverifiedServerChatRoomMessage) {
@@ -46,9 +46,9 @@ export function receivePacket(message: UnverifiedServerChatRoomMessage) {
 
   const type = message.Dictionary[0]!.type;
   const data = message.Dictionary[0]!.data;
-  for (const [key, modListneer] of Object.entries(modListneers)) {
+  for (const [key, modListneer] of [...modListneers]) {
     if (key === type) {
-      modListneer.callback(message, data);
+      modListneer(message, data);
     }
   }
 }

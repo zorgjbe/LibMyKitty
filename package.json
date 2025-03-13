@@ -1,6 +1,6 @@
 {
   "name": "libmykitty",
-  "version": "1.0.6",
+  "version": "1.0.9",
   "description": "Library of utility functions for interacting with the Bondage Club mod api.",
   "scripts": {
     "build": "tsup",

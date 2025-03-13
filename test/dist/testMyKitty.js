@@ -5792,18 +5792,18 @@ One of mods you are using is using an old version of SDK. It will work for now b
         BCStorage.syncCharacter(message.Sender, data);
       });
       registerModListener("syncJoin", (message, data) => {
-        sendModMessage("syncCharacter", Player[MOD_NAME], message.Sender);
+        sendModEvent("syncCharacter", Player[MOD_NAME], message.Sender);
       });
       BC_SDK.hookFunction("ChatRoomMessage", 1, (args, next) => {
         if (args[0].Content === "ServerEnter" && args[0].Sender === Player.MemberNumber) {
-          sendModMessage("syncJoin");
+          sendModEvent("syncJoin");
           return;
         }
         receivePacket(args[0]);
         return next(args);
       });
       BC_SDK.hookFunction("ChatRoomSync", 1, (args, next) => {
-        sendModMessage("syncCharacter");
+        sendModEvent("syncCharacter");
         return next(args);
       });
     }
@@ -5832,7 +5832,7 @@ One of mods you are using is using an old version of SDK. It will work for now b
       },
       /** Sends a sync message to the server to update clients with the current data. */
       syncClients(target) {
-        sendModMessage("syncCharacter", Player[MOD_NAME], target);
+        sendModEvent("syncCharacter", Player[MOD_NAME], target);
       },
       /** Syncs a specific character's data with the provided data. */
       syncCharacter(memberNumber, data) {
@@ -5843,7 +5843,7 @@ One of mods you are using is using an old version of SDK. It will work for now b
     };
     return BCStorage;
   }
-  function sendModMessage(type, data, target) {
+  function sendModEvent(type, data, target) {
     const ChatRoomMessage = {
       Type: "Hidden",
       Content: `${MOD_NAME}Msg`,
@@ -5867,9 +5867,9 @@ One of mods you are using is using an old version of SDK. It will work for now b
     if (!received) return;
     const type = message.Dictionary[0].type;
     const data = message.Dictionary[0].data;
-    for (const [key, modListneer] of Object.entries(modListneers)) {
+    for (const [key, modListneer] of [...modListneers]) {
       if (key === type) {
-        modListneer.callback(message, data);
+        modListneer(message, data);
       }
     }
   }
@@ -5896,9 +5896,10 @@ One of mods you are using is using an old version of SDK. It will work for now b
   function init() {
     const storageManager = CreateModStorageManager(DEFAULT_STORAGE);
     window.storageManager = storageManager;
-    registerModListener("foo", (message, data) => {
-      console.log(data.num);
+    registerModListener("foo", (data, { num }) => {
+      console.log(data + "foo");
     });
+    sendModEvent("foo", { num: 1 });
   }
 })();
 /*! Bundled license information:

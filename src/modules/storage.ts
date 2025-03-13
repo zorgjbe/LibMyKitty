@@ -1,6 +1,6 @@
 import { type UnverifiedServerChatRoomMessage, type PartialDeep, type AddonServerChatRoomMessage } from "@/types/types";
 import { debounce, merge } from "lodash";
-import { receivePacket, registerModListener, sendModMessage } from "./server";
+import { receivePacket, registerModListener, sendModEvent } from "./server";
 import { getCharacter } from "@/utils/character";
 import bcModSdk, { type ModSDKModAPI, type ModSDKModInfo, type ModSDKModOptions } from "bondage-club-mod-sdk";
 import { EnableActivities } from "./activities";
@@ -42,18 +42,18 @@ export function CreateModStorageManager<T extends StorageModel>(defaultStorage: 
       BCStorage.syncCharacter(message.Sender, data);
     });
     registerModListener("syncJoin", (message, data) => {
-      sendModMessage("syncCharacter", Player[MOD_NAME], message.Sender);
+      sendModEvent("syncCharacter", Player[MOD_NAME], message.Sender);
     });
     BC_SDK.hookFunction("ChatRoomMessage", 1, (args, next) => {
       if (args[0].Content === "ServerEnter" && args[0].Sender === Player.MemberNumber) {
-        sendModMessage("syncJoin");
+        sendModEvent("syncJoin");
         return;
       }
       receivePacket(args[0] as UnverifiedServerChatRoomMessage);
       return next(args);
     });
     BC_SDK.hookFunction("ChatRoomSync", 1, (args, next) => {
-      sendModMessage("syncCharacter"); // Tell everyone else to update their copy of our data, when we join a room.
+      sendModEvent("syncCharacter"); // Tell everyone else to update their copy of our data, when we join a room.
       return next(args);
     });
   }
@@ -86,7 +86,7 @@ export function CreateModStorageManager<T extends StorageModel>(defaultStorage: 
 
     /** Sends a sync message to the server to update clients with the current data. */
     syncClients(target?: number) {
-      sendModMessage("syncCharacter", Player[MOD_NAME], target);
+      sendModEvent("syncCharacter", Player[MOD_NAME], target);
     },
 
     /** Syncs a specific character's data with the provided data. */

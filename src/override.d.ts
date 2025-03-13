@@ -1,6 +1,6 @@
 declare interface Character {
-  [key: string]: Record<string, any>;
+  [key: string]: StorageModel;
 }
 declare interface Player {
-  [key: string]: Record<string, any>;
+  [key: string]: StorageModel;
 }

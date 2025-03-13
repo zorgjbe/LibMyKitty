@@ -19,12 +19,12 @@ LibMyKitty provides a set of tools to help mod developers create and manage thei
 - **Mod Initialization:** The `initMyKitty` function allows developers to easily register their mod with the game, ensuring it's recognized and can function correctly. Without needing to install the bondage-club-mod-sdk.
 
 - **Event Handling:** Functions like `AtLogin` enable developers to execute code when specific events occur, such as when a player logs in.
-- **Communication:** The library provides sending data between players and the server through functions like `sendModMessage` and `registerModListener`, allowing for the exchange of custom messages.
+- **Communication:** The library provides sending data between players and the server through functions like `sendModEvent` and `registerModListener`, allowing for the exchange of custom messages.
 - **Data Management:** The `createModStorageManager` tool provides a structured way to store and manage mod data, including saving and synchronizing information.
 - **Error Reporting:** The `CreateWebhook` feature allows developers to receive error notifications, which can help in identifying and fixing issues.
 - **Character Interaction:** Functions like `getCharacter` and `isAddonPlayer` provide ways to interact with and identify characters within the game environment.
 - **Asynchronous Operations:** The `waitFor` and `waitForElement` functions allow developers to pause code execution until certain conditions are met, ensuring smooth gameplay.
 
-View [Quickstart.md](quickstart.md) for more information on how to get started.
+View [Quickstart.md](wiki/quickstart.md) for more information on how to get started.
 
-If you are looking for something more documented, check out [Wiki.md](wiki.md)
+If you are looking for something more documented, check out [wiki/Wiki.md]()

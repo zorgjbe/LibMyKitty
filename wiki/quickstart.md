@@ -29,7 +29,7 @@ in your `tsconfig.json` if you are using `bc-stubs`
 `initMyKitty` is basically a wrapper of `bcModSdk.registerMod`. This enables my kitty to know about your mod. It also gives it the information about your mod name and your version so it can quickstart the features it provides. Such as storage and sending data between players.
 
 ```ts
-export const bcModSDK = initMyKitty({ name: "bondageKitties", fullName: "bondage kitties", version: "1.1.0" });
+export const bcModSDK = initMyKitty({ name: "bondageKitties", fullName: "bondage kitties", version: "1.1.0" }, { syncCharacters: true });
 ```
 
 #### Step 2 - Login
@@ -72,12 +72,20 @@ My kitty offers event listening capabilities. By default, there are no listeners
 This is how you can make your own listener and add functionality when the listener is triggered.
 
 ```ts
-registerModListener("OnHeadPats", (message: AddonServerChatRoomMessage, data: any) => {
-  console.log("AWOOOGAH!");
+declare module "libmykitty" {
+  interface Events {
+    pats: { isHeadPat: boolean };
+  }
+}
+registerModListener("OnHeadPats", (message: AddonServerChatRoomMessage, { isHeadPat }) => {
+  if (isHeadPat) {
+    console.log("AWOOOGAH!");
+  }
+  console.log("awooo!");
 });
 
 function sendPats() {
-  sendModMessage("pat");
+  sendModEvent("pats", { isHeadPat: true });
 }
 (<any>window).sendPats = sendPats;
 ```
