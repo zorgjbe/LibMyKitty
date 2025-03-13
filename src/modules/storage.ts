@@ -32,7 +32,6 @@ export function CreateModStorageManager<StorageType>(defaultStorage: StorageType
     BCStorage.syncCharacter(message.Sender, data);
   });
   registerModListener("syncJoin", (message, data) => {
-    // @ts-ignore
     sendModMessage("syncCharacter", Player[MOD_NAME], message.Sender);
   });
   BC_SDK.hookFunction("ChatRoomMessage", 1, (args, next) => {
@@ -52,13 +51,11 @@ export function CreateModStorageManager<StorageType>(defaultStorage: StorageType
   const decompressedData = storedData ? LZString.decompressFromBase64(storedData) : null;
   const parsedData = decompressedData ? JSON.parse(decompressedData) : defaultStorage;
 
-  // @ts-ignore
   Player[MOD_NAME] = merge(defaultStorage, parsedData);
   const BCStorage = {
     defaultStorage: defaultStorage,
     /** Saves the current data to the player's extension settings, debounced to run at SAVE_INTERVAL. */
     save: debounce(() => {
-      // @ts-ignore
       const compressed = LZString.compressToBase64(JSON.stringify(Player[MOD_NAME]));
       Player.ExtensionSettings[MOD_NAME] = compressed;
       ServerPlayerExtensionSettingsSync(MOD_NAME);
@@ -73,14 +70,12 @@ export function CreateModStorageManager<StorageType>(defaultStorage: StorageType
 
     /** Merges and saves new data into the player's server data. */
     sync(newData: PartialDeep<StorageType>) {
-      // @ts-ignore
       Player[MOD_NAME] = merge(defaultStorage, Player[MOD_NAME], newData ?? {});
       BCStorage.save();
     },
 
     /** Sends a sync message to the server to update clients with the current data. */
     syncClients(target?: number) {
-      // @ts-ignore
       sendModMessage("syncCharacter", Player[MOD_NAME], target);
     },
 
@@ -88,7 +83,6 @@ export function CreateModStorageManager<StorageType>(defaultStorage: StorageType
     syncCharacter(memberNumber: number, data: PartialDeep<StorageType>) {
       const otherCharacter = getCharacter(memberNumber);
       if (!otherCharacter) return;
-      // @ts-ignore
       otherCharacter[MOD_NAME] = merge(defaultStorage, otherCharacter[MOD_NAME], data);
     },
   };

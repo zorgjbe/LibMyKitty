@@ -11,8 +11,6 @@ export function getCharacter(identifier: string | number | Character): Character
   });
 }
 
-// @ts-ignore
-export function isAddonPlayer(character: Character, version = Player[MOD_NAME].version): boolean {
-  // @ts-ignore
-  return Boolean(character?.[MOD_NAME] && character[MOD_NAME].version === version);
+export function isAddonPlayer(character: Character, version = Player[MOD_NAME]!.version): boolean {
+  return Boolean(character[MOD_NAME] && character[MOD_NAME]!.version === version);
 }

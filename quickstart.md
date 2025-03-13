@@ -73,7 +73,7 @@ My kitty offers event listening capabilities. By default, there are no listeners
 This is how you can make your own listener and add functionality when the listener is triggered.
 
 ```ts
-registerModListener("OnHeadPats", (message, data) => {
+registerModListener("OnHeadPats", (message: AddonServerChatRoomMessage, data: any) => {
   console.log("AWOOOGAH!");
 });
 
