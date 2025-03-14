@@ -1,32 +1,28 @@
 import { type PartialDeep } from "@/types/types";
-import { debounce, merge } from "lodash";
-import { receivePacket, registerModListener, sendModEvent } from "./server";
-import { getCharacter, getStorage, setStorage } from "@/utils/character";
-import bcModSdk, { type ModSDKModAPI, type ModSDKModInfo, type ModSDKModOptions } from "bondage-club-mod-sdk";
-import { EnableActivities } from "./activities";
+import { merge, throttle } from "lodash";
+import { getCharacter } from "@/utils/character";
+import { sendModMessage } from "./server";
+import type { KittyModPrivate } from "@/main";
 
 export interface StorageModel {
   version: string;
 }
 
-export const SAVE_INTERVAL = 5000;
-export let MOD_NAME: string;
-export let MOD_VERSION: string;
-export let BC_SDK: ModSDKModAPI;
-export let OPTIONS = { activites: false, syncCharacters: false };
+const SAVE_INTERVAL = 5000;
 
-export function initMyKitty(modInfo: ModSDKModInfo, options?: ModSDKModOptions & typeof OPTIONS): ModSDKModAPI {
-  BC_SDK = bcModSdk.registerMod(modInfo, options);
-  MOD_NAME = modInfo.name;
-  MOD_VERSION = modInfo.version;
-  OPTIONS = merge(OPTIONS, options);
-  BC_SDK.hookFunction("ChatRoomMessage", 1, (args, next) => {
-    const [data] = args;
-    receivePacket(data);
-    return next(args);
-  });
-  if (options?.activites) EnableActivities();
-  return BC_SDK;
+export interface KittyStorage {
+  save(): void,
+  reset(): void,
+  clear(): void,
+}
+
+export interface KittyStoragePrivate {
+  getStorage(character: Character): StorageModel | undefined;
+  setStorage(character: Character, data: StorageModel): void;
+  loadStorage(): void;
+  syncClients(target?: number): void;
+  sync(newData: PartialDeep<StorageModel>): void;
+  syncCharacter(memberNumber: number, data: PartialDeep<StorageModel>): void;
 }
 
 /**
@@ -36,67 +32,92 @@ export function initMyKitty(modInfo: ModSDKModInfo, options?: ModSDKModOptions &
  * and with the server. The data is compressed and decompressed using LZString for
  * efficient storage and transfer.
  */
-
-export function CreateModStorageManager<T extends StorageModel>(defaultStorage: T) {
-  if (OPTIONS.syncCharacters) {
-    registerModListener("syncCharacter", (message, data) => {
-      BCStorage.syncCharacter(message.Sender, data);
-    });
-    registerModListener("syncJoin", (message, data) => {
-      sendModEvent("syncCharacter", getStorage(Player), message.Sender);
-    });
-    BC_SDK.hookFunction("ChatRoomMessage", 1, (args, next) => {
-      const [data] = args;
-      if (data.Content === "ServerEnter" && data.Sender === Player.MemberNumber) {
-        sendModEvent("syncJoin");
-        return;
-      }
-      receivePacket(data);
-      return next(args);
-    });
-    BC_SDK.hookFunction("ChatRoomSync", 1, (args, next) => {
-      sendModEvent("syncCharacter"); // Tell everyone else to update their copy of our data, when we join a room.
-      return next(args);
-    });
-  }
-  const storedData = Player.ExtensionSettings[MOD_NAME];
-  const decompressedData = storedData ? LZString.decompressFromBase64(storedData) : null;
-  const parsedData = decompressedData ? JSON.parse(decompressedData) : defaultStorage;
-
-  setStorage(Player, merge(defaultStorage, parsedData));
-  const BCStorage = {
-    defaultStorage: defaultStorage,
-    /** Saves the current data to the player's extension settings, debounced to run at SAVE_INTERVAL. */
-    save: debounce(() => {
-      const compressed = LZString.compressToBase64(JSON.stringify(getStorage(Player)));
-      Player.ExtensionSettings[MOD_NAME] = compressed;
-      ServerPlayerExtensionSettingsSync(MOD_NAME);
-      BCStorage.syncClients();
-    }, SAVE_INTERVAL),
-
-    /** Clears the data in the player's extension settings. */
-    clear() {
-      Player.ExtensionSettings[MOD_NAME] = "N4XyA==="; // Empty object compressed
-      ServerPlayerExtensionSettingsSync(MOD_NAME);
+export function setupStorage<T extends StorageModel>(mod: KittyModPrivate, defaultStorage: T) {
+  const priv: KittyStoragePrivate = {
+    getStorage(character: Character): StorageModel | undefined {
+      // @ts-expect-error 
+      return character[mod.name];
     },
 
-    /** Merges and saves new data into the player's server data. */
-    sync(newData: PartialDeep<StorageModel>) {
-      setStorage(Player, merge(defaultStorage, getStorage(Player), newData ?? {}));
-      BCStorage.save();
+    setStorage(character: Character, data: StorageModel): void {
+      // @ts-expect-error
+      character[mod.name] = data;
+    },
+
+    loadStorage() {
+      const storedData = Player.ExtensionSettings[mod.name];
+      const decompressedData = storedData ? LZString.decompressFromBase64(storedData) : null;
+      const parsedData = decompressedData ? JSON.parse(decompressedData) : defaultStorage;
+      
+      this.setStorage(Player, merge(defaultStorage, parsedData));
     },
 
     /** Sends a sync message to the server to update clients with the current data. */
     syncClients(target?: number) {
-      sendModEvent("syncCharacter", getStorage(Player), target);
+      sendModMessage.bind(mod)("syncCharacter", this.getStorage(Player), target);
+    },
+
+    /** Merges and saves new data into the player's server data. */
+    sync(newData: PartialDeep<StorageModel>) {
+      this.setStorage(Player, merge(defaultStorage, this.getStorage(Player), newData ?? {}));
+      storage.save();
     },
 
     /** Syncs a specific character's data with the provided data. */
     syncCharacter(memberNumber: number, data: PartialDeep<StorageModel>) {
       const otherCharacter = getCharacter(memberNumber);
       if (!otherCharacter) return;
-      setStorage(otherCharacter, merge(defaultStorage, getStorage(otherCharacter), data));
+      this.setStorage(otherCharacter, merge(defaultStorage, this.getStorage(otherCharacter), data));
+    },
+  }
+  mod.storage = priv;
+  
+  priv.loadStorage();
+
+  if (mod.options.syncCharacters) {
+    mod.emitter.on('syncCharacter', (data) => {
+      // priv.syncCharacter(data.SourceMemberNumber, data.Character);
+    })
+
+    mod.emitter.on("syncJoin", (data) => {
+      sendModMessage.bind(mod)("syncCharacter", priv.getStorage(Player), data.SourceMemberNumber);
+    })
+
+    mod.mod.hookFunction("ChatRoomSyncMemberJoin", 1, (args, next) => {
+      const [data] = args;
+      mod.emitter.emit("syncJoin", data);
+      return next(args);
+    })
+
+    mod.mod.hookFunction("ChatRoomSync", 1, (args, next) => {
+      const [data] = args;
+      // Tell everyone else to update their copy of our data, when we join a room.
+      mod.emitter.emit("syncCharacter", data);
+      return next(args);
+    });
+  }
+
+  const storage: KittyStorage = {
+    /** Saves the current data to the player's extension settings, debounced to run at SAVE_INTERVAL. */
+    save: throttle(() => {
+      const compressed = LZString.compressToBase64(JSON.stringify(priv.getStorage(Player)));
+      Player.ExtensionSettings[mod.name] = compressed;
+      ServerPlayerExtensionSettingsSync(mod.name);
+      priv.syncClients();
+    }, SAVE_INTERVAL),
+
+    /** Reset the data in the player's extension settings to their default */
+    reset() {
+      priv.setStorage(Player, defaultStorage);
+      this.save();
+    },
+
+    /** Clears the data in the player's extension settings. */
+    clear() {
+      Player.ExtensionSettings[mod.name] = "N4XyA==="; // Empty object compressed
+      ServerPlayerExtensionSettingsSync(mod.name);
     },
   };
-  return BCStorage;
+
+  return storage;
 }

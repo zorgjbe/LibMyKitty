@@ -14,7 +14,7 @@
     "esbuild": "^0.25.1"
   },
   "dependencies": {
-    "libmykitty": "^1.0.8",
+    "libmykitty": "..",
     "typescript": "^5.8.2"
   }
 }

@@ -1,4 +1,4 @@
-import { AtLogin, CreateModStorageManager, initMyKitty, registerModListener, sendModEvent, type AddonServerChatRoomMessage } from "libmykitty";
+import { createMod, type KittyChatRoomMessage } from "libmykitty";
 import { FULL_MOD_NAME, MOD_NAME, VERSION } from "../constants";
 
 type ModStorage = {
@@ -6,40 +6,43 @@ type ModStorage = {
   version: string;
 };
 const DEFAULT_STORAGE = {
+  version: VERSION,
   bongos: 0,
-  version: VERSION,
 };
-export const bcModSDK = initMyKitty({
-  fullName: FULL_MOD_NAME,
-  version: VERSION,
-  name: MOD_NAME,
-});
+const mod = createMod(
+  {
+    fullName: FULL_MOD_NAME,
+    version: VERSION,
+    name: MOD_NAME,
+  },
+  { syncCharacters: true, activities: true, defaultSettings: DEFAULT_STORAGE }
+);
 
-AtLogin(init);
+mod.atLogin(init);
 
 declare module "libmykitty" {
-  interface Events {
+  interface KittyModEvents {
+    blah: [];
+  }
+  interface KittyModEvents {
     foo: { num: number };
   }
 }
 
 function init() {
-  const storageManager = CreateModStorageManager<ModStorage>(DEFAULT_STORAGE);
-  (<any>window).storageManager = storageManager;
-
-  registerModListener("foo", (data, { num }) => {
+  mod.registerListener("foo", (data, { num }) => {
     console.log(data + "foo");
   });
 
-  sendModEvent("foo", { num: 1 });
+  mod.sendModMessage("foo", { num: 1 });
 }
 declare module "libmykitty" {
-  interface Events {
+  interface KittyModEvents {
     pats: { isHeadPat: boolean };
   }
 }
 
-registerModListener("pats", (message: AddonServerChatRoomMessage, { isHeadPat }) => {
+mod.registerListener("pats", (message, { isHeadPat }) => {
   if (isHeadPat) {
     console.log("AWOOOGAH!");
   }
@@ -47,6 +50,6 @@ registerModListener("pats", (message: AddonServerChatRoomMessage, { isHeadPat })
 });
 
 function sendPats() {
-  sendModEvent("pats", { isHeadPat: true });
+  mod.sendModMessage("pats", { isHeadPat: true });
 }
 (<any>window).sendPats = sendPats;

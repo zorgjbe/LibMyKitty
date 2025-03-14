@@ -6,8 +6,8 @@
   var __getOwnPropNames = Object.getOwnPropertyNames;
   var __getProtoOf = Object.getPrototypeOf;
   var __hasOwnProp = Object.prototype.hasOwnProperty;
-  var __commonJS = (cb, mod) => function __require() {
-    return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+  var __commonJS = (cb, mod2) => function __require() {
+    return mod2 || (0, cb[__getOwnPropNames(cb)[0]])((mod2 = { exports: {} }).exports, mod2), mod2.exports;
   };
   var __copyProps = (to, from, except, desc) => {
     if (from && typeof from === "object" || typeof from === "function") {
@@ -17,18 +17,18 @@
     }
     return to;
   };
-  var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  var __toESM = (mod2, isNodeMode, target) => (target = mod2 != null ? __create(__getProtoOf(mod2)) : {}, __copyProps(
     // If the importer is in node compatibility mode or this is not an ESM
     // file that has been converted to a CommonJS file using a Babel-
     // compatible transform (i.e. "__esModule" has not been set), then set
     // "default" to the CommonJS "module.exports" for node compatibility.
-    isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-    mod
+    isNodeMode || !mod2 || !mod2.__esModule ? __defProp(target, "default", { value: mod2, enumerable: true }) : target,
+    mod2
   ));
 
-  // node_modules/lodash/lodash.js
+  // ../node_modules/lodash/lodash.js
   var require_lodash = __commonJS({
-    "node_modules/lodash/lodash.js"(exports, module) {
+    "../node_modules/lodash/lodash.js"(exports, module) {
       (function() {
         var undefined;
         var VERSION2 = "4.17.21";
@@ -764,7 +764,7 @@
             function object() {
             }
             return function(proto) {
-              if (!isObject(proto)) {
+              if (!isObject3(proto)) {
                 return {};
               }
               if (objectCreate) {
@@ -1166,7 +1166,7 @@
             if (result2 !== undefined) {
               return result2;
             }
-            if (!isObject(value)) {
+            if (!isObject3(value)) {
               return value;
             }
             var isArr = isArray(value);
@@ -1513,7 +1513,7 @@
             return true;
           }
           function baseIsNative(value) {
-            if (!isObject(value) || isMasked(value)) {
+            if (!isObject3(value) || isMasked(value)) {
               return false;
             }
             var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
@@ -1553,7 +1553,7 @@
             return result2;
           }
           function baseKeysIn(object) {
-            if (!isObject(object)) {
+            if (!isObject3(object)) {
               return nativeKeysIn(object);
             }
             var isProto = isPrototype(object), result2 = [];
@@ -1598,7 +1598,7 @@
             }
             baseFor(source, function(srcValue, key) {
               stack || (stack = new Stack());
-              if (isObject(srcValue)) {
+              if (isObject3(srcValue)) {
                 baseMergeDeep(object, source, key, srcIndex, baseMerge, customizer, stack);
               } else {
                 var newValue = customizer ? customizer(safeGet(object, key), srcValue, key + "", object, source, stack) : undefined;
@@ -1638,7 +1638,7 @@
                 newValue = objValue;
                 if (isArguments(objValue)) {
                   newValue = toPlainObject(objValue);
-                } else if (!isObject(objValue) || isFunction(objValue)) {
+                } else if (!isObject3(objValue) || isFunction(objValue)) {
                   newValue = initCloneObject(srcValue);
                 }
               } else {
@@ -1777,7 +1777,7 @@
             return shuffleSelf(array, baseClamp(n, 0, array.length));
           }
           function baseSet(object, path, value, customizer) {
-            if (!isObject(object)) {
+            if (!isObject3(object)) {
               return object;
             }
             path = castPath(path, object);
@@ -1791,7 +1791,7 @@
                 var objValue = nested[key];
                 newValue = customizer ? customizer(objValue, key, nested) : undefined;
                 if (newValue === undefined) {
-                  newValue = isObject(objValue) ? objValue : isIndex(path[index + 1]) ? [] : {};
+                  newValue = isObject3(objValue) ? objValue : isIndex(path[index + 1]) ? [] : {};
                 }
               }
               assignValue(nested, key, newValue);
@@ -2241,7 +2241,7 @@
                   return new Ctor(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
               }
               var thisBinding = baseCreate(Ctor.prototype), result2 = Ctor.apply(thisBinding, args);
-              return isObject(result2) ? result2 : thisBinding;
+              return isObject3(result2) ? result2 : thisBinding;
             };
           }
           function createCurry(func, bitmask, arity) {
@@ -2577,7 +2577,7 @@
             return objValue;
           }
           function customDefaultsMerge(objValue, srcValue, key, object, source, stack) {
-            if (isObject(objValue) && isObject(srcValue)) {
+            if (isObject3(objValue) && isObject3(srcValue)) {
               stack.set(srcValue, objValue);
               baseMerge(objValue, srcValue, undefined, customDefaultsMerge, stack);
               stack["delete"](srcValue);
@@ -2925,7 +2925,7 @@
             return !!length && (type == "number" || type != "symbol" && reIsUint.test(value)) && (value > -1 && value % 1 == 0 && value < length);
           }
           function isIterateeCall(value, index, object) {
-            if (!isObject(object)) {
+            if (!isObject3(object)) {
               return false;
             }
             var type = typeof index;
@@ -2968,7 +2968,7 @@
             return value === proto;
           }
           function isStrictComparable(value) {
-            return value === value && !isObject(value);
+            return value === value && !isObject3(value);
           }
           function matchesStrictComparable(key, srcValue) {
             return function(object) {
@@ -3686,7 +3686,7 @@
             if (fromIndex < 0) {
               fromIndex = nativeMax(length + fromIndex, 0);
             }
-            return isString(collection) ? fromIndex <= length && collection.indexOf(value, fromIndex) > -1 : !!length && baseIndexOf(collection, value, fromIndex) > -1;
+            return isString2(collection) ? fromIndex <= length && collection.indexOf(value, fromIndex) > -1 : !!length && baseIndexOf(collection, value, fromIndex) > -1;
           }
           var invokeMap = baseRest(function(collection, path, args) {
             var index = -1, isFunc = typeof path == "function", result2 = isArrayLike(collection) ? Array2(collection.length) : [];
@@ -3754,7 +3754,7 @@
               return 0;
             }
             if (isArrayLike(collection)) {
-              return isString(collection) ? stringSize(collection) : collection.length;
+              return isString2(collection) ? stringSize(collection) : collection.length;
             }
             var tag = getTag(collection);
             if (tag == mapTag || tag == setTag) {
@@ -3844,13 +3844,13 @@
             result2.placeholder = curryRight.placeholder;
             return result2;
           }
-          function debounce2(func, wait, options) {
+          function debounce(func, wait, options) {
             var lastArgs, lastThis, maxWait, result2, timerId, lastCallTime, lastInvokeTime = 0, leading = false, maxing = false, trailing = true;
             if (typeof func != "function") {
               throw new TypeError2(FUNC_ERROR_TEXT);
             }
             wait = toNumber(wait) || 0;
-            if (isObject(options)) {
+            if (isObject3(options)) {
               leading = !!options.leading;
               maxing = "maxWait" in options;
               maxWait = maxing ? nativeMax(toNumber(options.maxWait) || 0, wait) : maxWait;
@@ -4015,16 +4015,16 @@
               return apply(func, this, otherArgs);
             });
           }
-          function throttle(func, wait, options) {
+          function throttle2(func, wait, options) {
             var leading = true, trailing = true;
             if (typeof func != "function") {
               throw new TypeError2(FUNC_ERROR_TEXT);
             }
-            if (isObject(options)) {
+            if (isObject3(options)) {
               leading = "leading" in options ? !!options.leading : leading;
               trailing = "trailing" in options ? !!options.trailing : trailing;
             }
-            return debounce2(func, wait, {
+            return debounce(func, wait, {
               "leading": leading,
               "maxWait": wait,
               "trailing": trailing
@@ -4128,19 +4128,19 @@
             return typeof value == "number" && nativeIsFinite(value);
           }
           function isFunction(value) {
-            if (!isObject(value)) {
+            if (!isObject3(value)) {
               return false;
             }
             var tag = baseGetTag(value);
             return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
           }
-          function isInteger(value) {
+          function isInteger2(value) {
             return typeof value == "number" && value == toInteger(value);
           }
           function isLength(value) {
             return typeof value == "number" && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
           }
-          function isObject(value) {
+          function isObject3(value) {
             var type = typeof value;
             return value != null && (type == "object" || type == "function");
           }
@@ -4186,10 +4186,10 @@
           }
           var isRegExp = nodeIsRegExp ? baseUnary(nodeIsRegExp) : baseIsRegExp;
           function isSafeInteger(value) {
-            return isInteger(value) && value >= -MAX_SAFE_INTEGER && value <= MAX_SAFE_INTEGER;
+            return isInteger2(value) && value >= -MAX_SAFE_INTEGER && value <= MAX_SAFE_INTEGER;
           }
           var isSet = nodeIsSet ? baseUnary(nodeIsSet) : baseIsSet;
-          function isString(value) {
+          function isString2(value) {
             return typeof value == "string" || !isArray(value) && isObjectLike(value) && baseGetTag(value) == stringTag;
           }
           function isSymbol(value) {
@@ -4214,7 +4214,7 @@
               return [];
             }
             if (isArrayLike(value)) {
-              return isString(value) ? stringToArray(value) : copyArray(value);
+              return isString2(value) ? stringToArray(value) : copyArray(value);
             }
             if (symIterator && value[symIterator]) {
               return iteratorToArray(value[symIterator]());
@@ -4247,9 +4247,9 @@
             if (isSymbol(value)) {
               return NAN;
             }
-            if (isObject(value)) {
+            if (isObject3(value)) {
               var other = typeof value.valueOf == "function" ? value.valueOf() : value;
-              value = isObject(other) ? other + "" : other;
+              value = isObject3(other) ? other + "" : other;
             }
             if (typeof value != "string") {
               return value === 0 ? value : +value;
@@ -4470,7 +4470,7 @@
               var Ctor = object && object.constructor;
               if (isArrLike) {
                 accumulator = isArr ? new Ctor() : [];
-              } else if (isObject(object)) {
+              } else if (isObject3(object)) {
                 accumulator = isFunction(Ctor) ? baseCreate(getPrototype(object)) : {};
               } else {
                 accumulator = {};
@@ -4755,7 +4755,7 @@
           }
           function truncate(string, options) {
             var length = DEFAULT_TRUNC_LENGTH, omission = DEFAULT_TRUNC_OMISSION;
-            if (isObject(options)) {
+            if (isObject3(options)) {
               var separator = "separator" in options ? options.separator : separator;
               length = "length" in options ? toInteger(options.length) : length;
               omission = "omission" in options ? baseToString(options.omission) : omission;
@@ -4883,15 +4883,15 @@
               return baseInvoke(object, path, args);
             };
           });
-          function mixin(object, source, options) {
+          function mixin2(object, source, options) {
             var props = keys(source), methodNames = baseFunctions(source, props);
-            if (options == null && !(isObject(source) && (methodNames.length || !props.length))) {
+            if (options == null && !(isObject3(source) && (methodNames.length || !props.length))) {
               options = source;
               source = object;
               object = this;
               methodNames = baseFunctions(source, keys(source));
             }
-            var chain2 = !(isObject(options) && "chain" in options) || !!options.chain, isFunc = isFunction(object);
+            var chain2 = !(isObject3(options) && "chain" in options) || !!options.chain, isFunc = isFunction(object);
             arrayEach(methodNames, function(methodName) {
               var func = source[methodName];
               object[methodName] = func;
@@ -5038,7 +5038,7 @@
           lodash.create = create;
           lodash.curry = curry;
           lodash.curryRight = curryRight;
-          lodash.debounce = debounce2;
+          lodash.debounce = debounce;
           lodash.defaults = defaults;
           lodash.defaultsDeep = defaultsDeep;
           lodash.defer = defer;
@@ -5086,7 +5086,7 @@
           lodash.mergeWith = mergeWith;
           lodash.method = method;
           lodash.methodOf = methodOf;
-          lodash.mixin = mixin;
+          lodash.mixin = mixin2;
           lodash.negate = negate;
           lodash.nthArg = nthArg;
           lodash.omit = omit;
@@ -5132,7 +5132,7 @@
           lodash.takeRightWhile = takeRightWhile;
           lodash.takeWhile = takeWhile;
           lodash.tap = tap;
-          lodash.throttle = throttle;
+          lodash.throttle = throttle2;
           lodash.thru = thru;
           lodash.toArray = toArray;
           lodash.toPairs = toPairs;
@@ -5168,7 +5168,7 @@
           lodash.entriesIn = toPairsIn;
           lodash.extend = assignIn;
           lodash.extendWith = assignInWith;
-          mixin(lodash, lodash);
+          mixin2(lodash, lodash);
           lodash.add = add;
           lodash.attempt = attempt;
           lodash.camelCase = camelCase;
@@ -5227,7 +5227,7 @@
           lodash.isError = isError;
           lodash.isFinite = isFinite;
           lodash.isFunction = isFunction;
-          lodash.isInteger = isInteger;
+          lodash.isInteger = isInteger2;
           lodash.isLength = isLength;
           lodash.isMap = isMap;
           lodash.isMatch = isMatch;
@@ -5237,13 +5237,13 @@
           lodash.isNil = isNil;
           lodash.isNull = isNull;
           lodash.isNumber = isNumber;
-          lodash.isObject = isObject;
+          lodash.isObject = isObject3;
           lodash.isObjectLike = isObjectLike;
           lodash.isPlainObject = isPlainObject;
           lodash.isRegExp = isRegExp;
           lodash.isSafeInteger = isSafeInteger;
           lodash.isSet = isSet;
-          lodash.isString = isString;
+          lodash.isString = isString2;
           lodash.isSymbol = isSymbol;
           lodash.isTypedArray = isTypedArray;
           lodash.isUndefined = isUndefined;
@@ -5321,7 +5321,7 @@
           lodash.each = forEach;
           lodash.eachRight = forEachRight;
           lodash.first = head;
-          mixin(lodash, function() {
+          mixin2(lodash, function() {
             var source = {};
             baseForOwn(lodash, function(func, methodName) {
               if (!hasOwnProperty.call(lodash.prototype, methodName)) {
@@ -5506,10 +5506,10 @@
     }
   });
 
-  // node_modules/bondage-club-mod-sdk/dist/bcmodsdk.js
+  // ../node_modules/bondage-club-mod-sdk/dist/bcmodsdk.js
   var require_bcmodsdk = __commonJS({
-    "node_modules/bondage-club-mod-sdk/dist/bcmodsdk.js"(exports) {
-      var bcModSdk3 = function() {
+    "../node_modules/bondage-club-mod-sdk/dist/bcmodsdk.js"(exports) {
+      var bcModSdk2 = function() {
         "use strict";
         const o = "1.2.0";
         function e(o2) {
@@ -5669,10 +5669,105 @@ One of mods you are using is using an old version of SDK. It will work for now b
     }
   });
 
-  // node_modules/libmykitty/dist/libmykitty.mjs
+  // ../dist/libmykitty.mjs
   var import_lodash = __toESM(require_lodash(), 1);
   var import_bondage_club_mod_sdk = __toESM(require_bcmodsdk(), 1);
-  var import_bondage_club_mod_sdk2 = __toESM(require_bcmodsdk(), 1);
+  var import_lodash2 = __toESM(require_lodash(), 1);
+  var import_lodash3 = __toESM(require_lodash(), 1);
+
+  // ../node_modules/@socket.io/component-emitter/lib/esm/index.js
+  function Emitter(obj) {
+    if (obj) return mixin(obj);
+  }
+  function mixin(obj) {
+    for (var key in Emitter.prototype) {
+      obj[key] = Emitter.prototype[key];
+    }
+    return obj;
+  }
+  Emitter.prototype.on = Emitter.prototype.addEventListener = function(event, fn) {
+    this._callbacks = this._callbacks || {};
+    (this._callbacks["$" + event] = this._callbacks["$" + event] || []).push(fn);
+    return this;
+  };
+  Emitter.prototype.once = function(event, fn) {
+    function on() {
+      this.off(event, on);
+      fn.apply(this, arguments);
+    }
+    on.fn = fn;
+    this.on(event, on);
+    return this;
+  };
+  Emitter.prototype.off = Emitter.prototype.removeListener = Emitter.prototype.removeAllListeners = Emitter.prototype.removeEventListener = function(event, fn) {
+    this._callbacks = this._callbacks || {};
+    if (0 == arguments.length) {
+      this._callbacks = {};
+      return this;
+    }
+    var callbacks = this._callbacks["$" + event];
+    if (!callbacks) return this;
+    if (1 == arguments.length) {
+      delete this._callbacks["$" + event];
+      return this;
+    }
+    var cb;
+    for (var i = 0; i < callbacks.length; i++) {
+      cb = callbacks[i];
+      if (cb === fn || cb.fn === fn) {
+        callbacks.splice(i, 1);
+        break;
+      }
+    }
+    if (callbacks.length === 0) {
+      delete this._callbacks["$" + event];
+    }
+    return this;
+  };
+  Emitter.prototype.emit = function(event) {
+    this._callbacks = this._callbacks || {};
+    var args = new Array(arguments.length - 1), callbacks = this._callbacks["$" + event];
+    for (var i = 1; i < arguments.length; i++) {
+      args[i - 1] = arguments[i];
+    }
+    if (callbacks) {
+      callbacks = callbacks.slice(0);
+      for (var i = 0, len = callbacks.length; i < len; ++i) {
+        callbacks[i].apply(this, args);
+      }
+    }
+    return this;
+  };
+  Emitter.prototype.emitReserved = Emitter.prototype.emit;
+  Emitter.prototype.listeners = function(event) {
+    this._callbacks = this._callbacks || {};
+    return this._callbacks["$" + event] || [];
+  };
+  Emitter.prototype.hasListeners = function(event) {
+    return !!this.listeners(event).length;
+  };
+
+  // ../dist/libmykitty.mjs
+  function sendModMessage(type, data, target) {
+    const ChatRoomMessage = {
+      Type: "Hidden",
+      Content: `${this.name}${type}`,
+      Sender: Player.MemberNumber,
+      Target: target,
+      Data: data
+    };
+    ServerSend("ChatRoomChat", ChatRoomMessage);
+  }
+  function receiveModMessage(message) {
+    const received = isModMessage(this.name, message);
+    if (!received) return;
+    const type = message.Content.substring(this.name.length);
+    const data = message.Data;
+    this.emitter.emit(type, data);
+  }
+  function isModMessage(modName, message) {
+    return (0, import_lodash.isObject)(message) && "Type" in message && message.Type === "Hidden" && "Content" in message && (0, import_lodash.isString)(message.Content) && message.Content.startsWith(modName) && "Sender" in message && (0, import_lodash.isInteger)(message.Sender) && message.Sender !== Player.MemberNumber;
+  }
   async function waitFor(func, cancelFunc = () => false) {
     while (!func()) {
       if (cancelFunc()) return false;
@@ -5706,21 +5801,10 @@ One of mods you are using is using an old version of SDK. It will work for now b
       }
     });
   }
-  async function AtLogin(callback) {
-    await waitFor(() => Player.CharacterID !== "");
-    callback();
-  }
-  function getCharacter(identifier) {
-    if (!identifier) return;
-    if (typeof identifier === "object") return identifier;
-    return ChatRoomCharacter.find((character) => {
-      return character.MemberNumber === identifier || character.Name.toLowerCase() === identifier || character.Nickname?.toLowerCase() === identifier;
-    });
-  }
-  var insertActivityButton = (name, id, src, onClick) => {
+  var insertActivityButton = (modName, name, id, src, onClick) => {
     const button = document.createElement("button");
     button.id = id;
-    button.name = `${MOD_NAME}_${name}`;
+    button.name = `${modName}_${name}`;
     button.dataset.group = "ItemArms";
     button.className = `blank-button button button-styling HideOnPopup dialog-grid-button`;
     button.innerHTML = `<img decoding="async" loading="lazy" src="${src}" class="button-image"><span class="button-label button-label-bottom">${name}</span>`;
@@ -5746,13 +5830,13 @@ One of mods you are using is using an old version of SDK. It will work for now b
     return Boolean((!activity.Criteria || activity.Criteria(player)) && player.FocusGroup && activityInGroup(activity, player.FocusGroup.Name));
   };
   var activities = [];
-  function EnableActivities() {
-    BC_SDK.hookFunction("DialogMenuMapping.activities.GetClickStatus", 1, (args, next) => {
+  function setupActivities(mod2) {
+    mod2.mod.hookFunction("DialogMenuMapping.activities.GetClickStatus", 1, (args, next) => {
       const [_C, _clickedObj, _equippedItem] = args;
       if (!_clickedObj) return null;
       return next(args);
     });
-    BC_SDK.hookFunction("DialogChangeMode", 1, async (args, next) => {
+    mod2.mod.hookFunction("DialogChangeMode", 1, async (args, next) => {
       const [_mode] = args;
       next(args);
       if (_mode !== "activities") return;
@@ -5763,144 +5847,159 @@ One of mods you are using is using an old version of SDK. It will work for now b
         if (!activity) continue;
         if (activityFitsCriteria(activity, CurrentCharacter ?? Player)) {
           if (!activityIsInserted(activity.ID)) {
-            activityGrid.appendChild(insertActivityButton(activity.Name, activity.ID, activity.Image, activity.OnClick));
+            activityGrid.appendChild(insertActivityButton(mod2.name, activity.Name, activity.ID, activity.Image, activity.OnClick));
           }
         }
       }
     });
   }
-  var SAVE_INTERVAL = 5e3;
-  var MOD_NAME;
-  var MOD_VERSION;
-  var BC_SDK;
-  var OPTIONS = { activites: false, syncCharacters: false };
-  function initMyKitty(modInfo, options) {
-    BC_SDK = import_bondage_club_mod_sdk.default.registerMod(modInfo, options);
-    MOD_NAME = modInfo.name;
-    MOD_VERSION = modInfo.version;
-    OPTIONS = (0, import_lodash.merge)(OPTIONS, options);
-    BC_SDK.hookFunction("ChatRoomMessage", 1, (args, next) => {
-      receivePacket(args[0]);
-      return next(args);
+  function getCharacter(identifier) {
+    if (!identifier) return;
+    if ((0, import_lodash3.isObject)(identifier)) return identifier;
+    return ChatRoomCharacter.find((character) => {
+      return character.MemberNumber === identifier || character.Name.toLowerCase() === identifier || character.Nickname?.toLowerCase() === identifier;
     });
-    if (options?.activites) EnableActivities();
-    return BC_SDK;
   }
-  function CreateModStorageManager(defaultStorage) {
-    if (OPTIONS.syncCharacters) {
-      registerModListener("syncCharacter", (message, data) => {
-        BCStorage.syncCharacter(message.Sender, data);
-      });
-      registerModListener("syncJoin", (message, data) => {
-        sendModEvent("syncCharacter", Player[MOD_NAME], message.Sender);
-      });
-      BC_SDK.hookFunction("ChatRoomMessage", 1, (args, next) => {
-        if (args[0].Content === "ServerEnter" && args[0].Sender === Player.MemberNumber) {
-          sendModEvent("syncJoin");
-          return;
-        }
-        receivePacket(args[0]);
-        return next(args);
-      });
-      BC_SDK.hookFunction("ChatRoomSync", 1, (args, next) => {
-        sendModEvent("syncCharacter");
-        return next(args);
-      });
-    }
-    const storedData = Player.ExtensionSettings[MOD_NAME];
-    const decompressedData = storedData ? LZString.decompressFromBase64(storedData) : null;
-    const parsedData = decompressedData ? JSON.parse(decompressedData) : defaultStorage;
-    Player[MOD_NAME] = (0, import_lodash.merge)(defaultStorage, parsedData);
-    const BCStorage = {
-      defaultStorage,
-      /** Saves the current data to the player's extension settings, debounced to run at SAVE_INTERVAL. */
-      save: (0, import_lodash.debounce)(() => {
-        const compressed = LZString.compressToBase64(JSON.stringify(Player[MOD_NAME]));
-        Player.ExtensionSettings[MOD_NAME] = compressed;
-        ServerPlayerExtensionSettingsSync(MOD_NAME);
-        BCStorage.syncClients();
-      }, SAVE_INTERVAL),
-      /** Clears the data in the player's extension settings. */
-      clear() {
-        Player.ExtensionSettings[MOD_NAME] = "N4XyA===";
-        ServerPlayerExtensionSettingsSync(MOD_NAME);
+  var SAVE_INTERVAL = 5e3;
+  function setupStorage(mod2, defaultStorage) {
+    const priv = {
+      getStorage(character) {
+        return character[mod2.name];
       },
-      /** Merges and saves new data into the player's server data. */
-      sync(newData) {
-        Player[MOD_NAME] = (0, import_lodash.merge)(defaultStorage, Player[MOD_NAME], newData ?? {});
-        BCStorage.save();
+      setStorage(character, data) {
+        character[mod2.name] = data;
+      },
+      loadStorage() {
+        const storedData = Player.ExtensionSettings[mod2.name];
+        const decompressedData = storedData ? LZString.decompressFromBase64(storedData) : null;
+        const parsedData = decompressedData ? JSON.parse(decompressedData) : defaultStorage;
+        this.setStorage(Player, (0, import_lodash2.merge)(defaultStorage, parsedData));
       },
       /** Sends a sync message to the server to update clients with the current data. */
       syncClients(target) {
-        sendModEvent("syncCharacter", Player[MOD_NAME], target);
+        sendModMessage.bind(mod2)("syncCharacter", this.getStorage(Player), target);
+      },
+      /** Merges and saves new data into the player's server data. */
+      sync(newData) {
+        this.setStorage(Player, (0, import_lodash2.merge)(defaultStorage, this.getStorage(Player), newData ?? {}));
+        storage.save();
       },
       /** Syncs a specific character's data with the provided data. */
       syncCharacter(memberNumber, data) {
         const otherCharacter = getCharacter(memberNumber);
         if (!otherCharacter) return;
-        otherCharacter[MOD_NAME] = (0, import_lodash.merge)(defaultStorage, otherCharacter[MOD_NAME], data);
+        this.setStorage(otherCharacter, (0, import_lodash2.merge)(defaultStorage, this.getStorage(otherCharacter), data));
       }
     };
-    return BCStorage;
-  }
-  function sendModEvent(type, data, target) {
-    const ChatRoomMessage = {
-      Type: "Hidden",
-      Content: `${MOD_NAME}Msg`,
-      Sender: Player.MemberNumber,
-      Target: target,
-      Dictionary: [
-        {
-          type,
-          data
-        }
-      ]
-    };
-    ServerSend("ChatRoomChat", ChatRoomMessage);
-  }
-  var modListneers = /* @__PURE__ */ new Map();
-  function registerModListener(type, callback) {
-    modListneers.set(type, callback);
-  }
-  function receivePacket(message) {
-    const received = isModMessage(message);
-    if (!received) return;
-    const type = message.Dictionary[0].type;
-    const data = message.Dictionary[0].data;
-    for (const [key, modListneer] of [...modListneers]) {
-      if (key === type) {
-        modListneer(message, data);
-      }
+    mod2.storage = priv;
+    priv.loadStorage();
+    if (mod2.options.syncCharacters) {
+      mod2.emitter.on("syncCharacter", (data) => {
+      });
+      mod2.emitter.on("syncJoin", (data) => {
+        sendModMessage.bind(mod2)("syncCharacter", priv.getStorage(Player), data.SourceMemberNumber);
+      });
+      mod2.mod.hookFunction("ChatRoomSyncMemberJoin", 1, (args, next) => {
+        const [data] = args;
+        mod2.emitter.emit("syncJoin", data);
+        return next(args);
+      });
+      mod2.mod.hookFunction("ChatRoomSync", 1, (args, next) => {
+        const [data] = args;
+        mod2.emitter.emit("syncCharacter", data);
+        return next(args);
+      });
     }
+    const storage = {
+      /** Saves the current data to the player's extension settings, debounced to run at SAVE_INTERVAL. */
+      save: (0, import_lodash2.throttle)(() => {
+        const compressed = LZString.compressToBase64(JSON.stringify(priv.getStorage(Player)));
+        Player.ExtensionSettings[mod2.name] = compressed;
+        ServerPlayerExtensionSettingsSync(mod2.name);
+        priv.syncClients();
+      }, SAVE_INTERVAL),
+      /** Reset the data in the player's extension settings to their default */
+      reset() {
+        priv.setStorage(Player, defaultStorage);
+        this.save();
+      },
+      /** Clears the data in the player's extension settings. */
+      clear() {
+        Player.ExtensionSettings[mod2.name] = "N4XyA===";
+        ServerPlayerExtensionSettingsSync(mod2.name);
+      }
+    };
+    return storage;
   }
-  function isModMessage(message) {
-    return message?.Content === `${MOD_NAME}Msg` && message.Sender && message.Sender !== Player.MemberNumber && message.Dictionary && message.Dictionary[0]?.data && message.Type === "Hidden";
+  function createMod(modInfo, options) {
+    const sdk = import_bondage_club_mod_sdk.default.registerMod(modInfo, options);
+    const pubMod = Object.assign(sdk, {
+      async atLogin(callback) {
+        await waitFor(() => Player.CharacterID !== "");
+        callback();
+      },
+      sendModMessage,
+      registerListener(ev, listener) {
+        mod2.emitter.on(ev, listener);
+      }
+    });
+    pubMod.sendModMessage = pubMod.sendModMessage.bind(pubMod);
+    pubMod.sendModMessage = pubMod.sendModMessage.bind(pubMod);
+    const emitter = new Emitter();
+    const mod2 = {
+      mod: pubMod,
+      name: modInfo.name,
+      version: modInfo.version,
+      options: options ?? {},
+      emitter
+    };
+    sdk.hookFunction("ChatRoomMessage", 1, (args, next) => {
+      const [data] = args;
+      receiveModMessage.bind(mod2)(data);
+      return next(args);
+    });
+    if (options?.activities) setupActivities(mod2);
+    if (options?.defaultSettings) {
+      setupStorage(mod2, options.defaultSettings);
+    }
+    return pubMod;
   }
 
   // constants.ts
   var VERSION = "1.0.0";
-  var MOD_NAME2 = "TestMyKitty";
+  var MOD_NAME = "TestMyKitty";
   var FULL_MOD_NAME = "testing my kitty";
 
   // src/index.ts
   var DEFAULT_STORAGE = {
-    bongos: 0,
-    version: VERSION
-  };
-  var bcModSDK = initMyKitty({
-    fullName: FULL_MOD_NAME,
     version: VERSION,
-    name: MOD_NAME2
-  });
-  AtLogin(init);
+    bongos: 0
+  };
+  var mod = createMod(
+    {
+      fullName: FULL_MOD_NAME,
+      version: VERSION,
+      name: MOD_NAME
+    },
+    { syncCharacters: true, activities: true, defaultSettings: DEFAULT_STORAGE }
+  );
+  mod.atLogin(init);
   function init() {
-    const storageManager = CreateModStorageManager(DEFAULT_STORAGE);
-    window.storageManager = storageManager;
-    registerModListener("foo", (data, { num }) => {
+    mod.registerListener("foo", (data, { num }) => {
       console.log(data + "foo");
     });
-    sendModEvent("foo", { num: 1 });
+    mod.sendModMessage("foo", { num: 1 });
   }
+  mod.registerListener("pats", (message, { isHeadPat }) => {
+    if (isHeadPat) {
+      console.log("AWOOOGAH!");
+    }
+    console.log("awooo!");
+  });
+  function sendPats() {
+    mod.sendModMessage("pats", { isHeadPat: true });
+  }
+  window.sendPats = sendPats;
 })();
 /*! Bundled license information:
 

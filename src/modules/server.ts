@@ -1,22 +1,16 @@
-import { type AddonChatRoomMessage } from "@/types/types";
-import { MOD_NAME, type StorageModel } from "./storage";
 import { isInteger, isObject, isString } from "lodash";
-export interface Events {
-  syncCharacter: StorageModel;
-  syncJoin: StorageModel;
-}
-export const HookPriority = {
-  OBSERVE: 0,
-  ADD_BEHAVIOR: 1,
-  MODIFY_BEHAVIOR: 5,
-  OVERRIDE_BEHAVIOR: 10,
-  TOP: 100,
-};
+import type { KittyModPrivate } from "@/main";
 
-export function sendModEvent<T extends keyof Events>(type: T, data?: Events[T], target?: number) {
-  const ChatRoomMessage: AddonChatRoomMessage = {
+export interface KittyChatRoomMessage extends ServerChatRoomMessage {
+  Content: `${string}`;
+  Type: "Hidden";
+  Data: any;
+}
+
+export function sendModMessage(this: KittyModPrivate, type: string, data?: any, target?: number) {
+  const ChatRoomMessage: KittyChatRoomMessage = {
     Type: "Hidden",
-    Content: `${MOD_NAME}${type}`,
+    Content: `${this.name}${type}`,
     Sender: Player.MemberNumber,
     Target: target,
     Data: data,
@@ -24,38 +18,20 @@ export function sendModEvent<T extends keyof Events>(type: T, data?: Events[T], 
   ServerSend("ChatRoomChat", ChatRoomMessage);
 }
 
-type EventListeners = {
-  [K in keyof Events]: (message: AddonChatRoomMessage, data: Events[K]) => void;
-};
-
-const modListeners = new Map<keyof Events, EventListeners[keyof Events]>();
-
-export function registerModListener<T extends keyof Events>(type: T, callback: EventListeners[T]) {
-  modListeners.set(type, callback);
-}
-
-export function unregisterModListener<T extends keyof Events>(type: T) {
-  modListeners.delete(type);
-}
-
-export function receivePacket(message: ServerChatRoomMessage) {
-  const received = isModMessage(message);
+export function receiveModMessage(this: KittyModPrivate, message: ServerChatRoomMessage) {
+  const received = isModMessage(this.name, message);
   if (!received) return;
 
-  const type = message.Content.substring(MOD_NAME.length)
+  const type = message.Content.substring(this.name.length)
   const data = message.Data;
-  for (const [key, modListener] of [...modListeners]) {
-    if (key === type) {
-      modListener(message, data);
-    }
-  }
+  this.emitter.emit(type, data);
 }
 
-export function isModMessage(message: unknown): message is AddonChatRoomMessage {
+export function isModMessage(modName: string, message: unknown): message is KittyChatRoomMessage {
   return (
     isObject(message) && 
     "Type" in message && message.Type === "Hidden" &&
-    "Content" in message && isString(message.Content) && message.Content.startsWith(MOD_NAME) &&
+    "Content" in message && isString(message.Content) && message.Content.startsWith(modName) &&
     "Sender" in message && isInteger(message.Sender) && message.Sender !== Player.MemberNumber
   );
 }

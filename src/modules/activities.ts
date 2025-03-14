@@ -1,10 +1,20 @@
-import { waitForElement, type MyKittyActivity } from "@/libmykitty";
-import { BC_SDK, MOD_NAME } from "./storage";
+import type { KittyModPrivate } from "@/main";
+import { waitForElement } from "@/utils/general";
 
-const insertActivityButton = (name: string, id: string, src: string, onClick?: (player: Character, group: AssetGroupItemName) => void): HTMLButtonElement => {
+export interface MyKittyActivity {
+  ID: string;
+  Name: string;
+  Image: string;
+  OnClick?: (player: Character, group: AssetGroupItemName) => void;
+  Target?: AssetGroupItemName[];
+  TargetSelf?: AssetGroupItemName[];
+  Criteria?: (player: Character) => boolean;
+}
+
+const insertActivityButton = (modName: string, name: string, id: string, src: string, onClick?: (player: Character, group: AssetGroupItemName) => void): HTMLButtonElement => {
   const button = document.createElement("button");
   button.id = id;
-  button.name = `${MOD_NAME}_${name}`;
+  button.name = `${modName}_${name}`;
   button.dataset.group = "ItemArms";
   button.className = `blank-button button button-styling HideOnPopup dialog-grid-button`;
   button.innerHTML = `<img decoding="async" loading="lazy" src="${src}" class="button-image"><span class="button-label button-label-bottom">${name}</span>`;
@@ -35,14 +45,14 @@ const activityFitsCriteria = (activity: MyKittyActivity, player: Character): boo
 const activities: MyKittyActivity[] = [];
 export const registerActivity = (activity: MyKittyActivity) => activities.push(activity);
 
-export function EnableActivities() {
-  BC_SDK.hookFunction("DialogMenuMapping.activities.GetClickStatus", 1, (args, next) => {
+export function setupActivities(mod: KittyModPrivate) {
+  mod.mod.hookFunction("DialogMenuMapping.activities.GetClickStatus", 1, (args, next) => {
     const [_C, _clickedObj, _equippedItem] = args;
     if (!_clickedObj) return null;
     return next(args);
   });
 
-  BC_SDK.hookFunction("DialogChangeMode", 1, async (args, next) => {
+  mod.mod.hookFunction("DialogChangeMode", 1, async (args, next) => {
     const [_mode] = args;
     next(args);
     if (_mode !== "activities") return;
@@ -56,7 +66,7 @@ export function EnableActivities() {
 
       if (activityFitsCriteria(activity, CurrentCharacter ?? Player)) {
         if (!activityIsInserted(activity.ID)) {
-          activityGrid.appendChild(insertActivityButton(activity.Name, activity.ID, activity.Image, activity.OnClick));
+          activityGrid.appendChild(insertActivityButton(mod.name, activity.Name, activity.ID, activity.Image, activity.OnClick));
         }
       }
     }
